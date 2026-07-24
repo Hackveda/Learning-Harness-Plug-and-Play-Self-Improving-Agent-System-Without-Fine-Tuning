@@ -84,7 +84,17 @@ with tabs[2]:
 with tabs[3]:
     st.subheader("Current strategy playbook")
     st.markdown("#### Fixed reference data")
-    st.dataframe(pd.DataFrame(champion["fixed_reference_data"]), use_container_width=True)
+    fixed_rows = []
+    for item in champion["fixed_reference_data"]:
+        row = dict(item)
+        value = row.get("value")
+        if isinstance(value, (list, dict, tuple, set)):
+            import json
+            row["value"] = json.dumps(value, ensure_ascii=False)
+        elif value is not None:
+            row["value"] = str(value)
+        fixed_rows.append(row)
+    st.dataframe(pd.DataFrame(fixed_rows), use_container_width=True)
     st.markdown("#### Proven rules")
     st.dataframe(pd.DataFrame(champion["proven_rules"]), use_container_width=True)
     st.markdown("#### Trial rules")
